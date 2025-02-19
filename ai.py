@@ -1,28 +1,38 @@
 import pyttsx3
-import tkinter
 import speech_recognition as sr
 import datetime
 import wikipedia
 import webbrowser
 import os
-engine= pyttsx3.init('sapi5')
-voices=engine.getProperty('voices')
+import pywhatkit
+from googletrans import Translator
 
+
+engine = pyttsx3.init('sapi5')
+voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[0].id)
-def speak(audio):
-    engine.say(audio)
+
+
+translator = Translator()
+
+def speak(audio, lang="en"):
+    """Convert text to speech."""
+    engine.say(audio)   
     engine.runAndWait()
+
 def wishMe():
-    hour=int(datetime.datetime.now().hour)
-    if hour>=0 and hour<12:
+    """Greet the user based on time of day."""
+    hour = int(datetime.datetime.now().hour)
+    if hour >= 0 and hour < 12:
         speak("Good Morning!")
-    elif hour>=12 and hour<18:
-        speak("Good afternoon!")
+    elif hour >= 12 and hour < 18:
+        speak("Good Afternoon!")
     else:
         speak("Good Evening!")
-    speak("My name is jonny how may i help you")
+    speak("My name is Jonny, how may I help you?")
 
 def takeCommand():
+    """Recognize user speech and return translated text."""
     r = sr.Recognizer()
     
     with sr.Microphone() as source:
@@ -32,41 +42,55 @@ def takeCommand():
 
     try:
         print("Recognizing...")
-        query = r.recognize_google(audio, language='en-in')
-        print(f"User said: {query}\n")
+        query = r.recognize_google(audio, language='auto') 
+        print(f"User said: {query}")
+
+       
+        translated_text = translator.translate(query, dest="en").text
+        print(f"Translated: {translated_text}")
+        return translated_text.lower()
+
     except sr.UnknownValueError:
         print("Could not understand audio, please speak again.")
         return "None"
     
-    return query
-
-if __name__=="__main__":
+if __name__ == "__main__":
     speak("Hello")
     wishMe()
+    
     while True:
-        query=takeCommand().lower()
+        query = takeCommand()
+        if query == "none":
+            continue
+        
         if 'wikipedia' in query:
-            speak('Searching wikipedia...')
-            query=query.replace("wikipedia","")
-            results= wikipedia.summary(query, sentences=2)
+            speak('Searching Wikipedia...')
+            query = query.replace("wikipedia", "")
+            results = wikipedia.summary(query, sentences=2)
             speak("According to Wikipedia")
             print(results)
             speak(results)
-        elif 'open Youtube' in query:
+
+        elif 'open youtube' in query:
             webbrowser.open("youtube.com")
-        elif 'open Instagram' in query:
+
+        elif 'open instagram' in query:
             webbrowser.open("instagram.com")
-        elif 'open Google' in query:
+
+        elif 'open google' in query:
             webbrowser.open("google.com")
+
         elif 'play music' in query:
-            music='G:\\music'
-            songs=os.listdir(music)
-            print(songs)
-            os.startfile(os.path.join(music, songs[0]))
+            speak("What song would you like to play?")
+            song = takeCommand()
+            if song != "none":
+                speak(f"Playing {song} on YouTube")
+                pywhatkit.playonyt(song)
+
         elif 'the time' in query:
-            strTime=datetime.datetime.now().strftime("%H:%M:%S")
-            speak(f"Sir the time is {strTime}")
+            strTime = datetime.datetime.now().strftime("%H:%M:%S")
+            speak(f"The time is {strTime}")
 
         elif 'open vs code' in query:
-            path="C:\\Users\\laves\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+            path = "C:\\Users\\laves\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
             os.startfile(path)
