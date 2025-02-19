@@ -1,38 +1,30 @@
 import pyttsx3
+import tkinter
 import speech_recognition as sr
 import datetime
 import wikipedia
 import webbrowser
 import os
-import pywhatkit
-from googletrans import Translator
+import pywhatkit 
+import smtplib
+engine= pyttsx3.init('sapi5')
+voices=engine.getProperty('voices')
 
-
-engine = pyttsx3.init('sapi5')
-voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[0].id)
-
-
-translator = Translator()
-
-def speak(audio, lang="en"):
-    """Convert text to speech."""
-    engine.say(audio)   
+def speak(audio):
+    engine.say(audio)
     engine.runAndWait()
-
 def wishMe():
-    """Greet the user based on time of day."""
-    hour = int(datetime.datetime.now().hour)
-    if hour >= 0 and hour < 12:
+    hour=int(datetime.datetime.now().hour)
+    if hour>=0 and hour<12:
         speak("Good Morning!")
-    elif hour >= 12 and hour < 18:
-        speak("Good Afternoon!")
+    elif hour>=12 and hour<18:
+        speak("Good afternoon!")
     else:
         speak("Good Evening!")
-    speak("My name is Jonny, how may I help you?")
+    speak("My name is jonny how may i help you")
 
 def takeCommand():
-    """Recognize user speech and return translated text."""
     r = sr.Recognizer()
     
     with sr.Microphone() as source:
@@ -42,55 +34,64 @@ def takeCommand():
 
     try:
         print("Recognizing...")
-        query = r.recognize_google(audio, language='auto') 
-        print(f"User said: {query}")
-
-       
-        translated_text = translator.translate(query, dest="en").text
-        print(f"Translated: {translated_text}")
-        return translated_text.lower()
-
+        query = r.recognize_google(audio, language='en-in')
+        print(f"User said: {query}\n")
     except sr.UnknownValueError:
         print("Could not understand audio, please speak again.")
         return "None"
     
-if __name__ == "__main__":
+    return query
+def sendEmail(to,content):
+    server=smtplib.SMTP('smntp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login('vadapav.1666@gmail.com','Lavesh@1234')
+    server.sendmail('vadapav.1666@gmail.com',to, content)
+    server.close()
+if __name__=="__main__":
     speak("Hello")
     wishMe()
-    
     while True:
-        query = takeCommand()
-        if query == "none":
-            continue
-        
+        query=takeCommand().lower()
         if 'wikipedia' in query:
-            speak('Searching Wikipedia...')
-            query = query.replace("wikipedia", "")
-            results = wikipedia.summary(query, sentences=2)
+            speak('Searching wikipedia...')
+            query=query.replace("wikipedia","")
+            results= wikipedia.summary(query, sentences=2)
             speak("According to Wikipedia")
             print(results)
             speak(results)
-
-        elif 'open youtube' in query:
+        elif 'open Youtube' in query:
             webbrowser.open("youtube.com")
-
-        elif 'open instagram' in query:
+        elif 'open Instagram' in query:
             webbrowser.open("instagram.com")
-
-        elif 'open google' in query:
+        elif 'open Google' in query:
             webbrowser.open("google.com")
-
+        # elif 'play music' in query:
+        #     music='G:\\music'
+        #     songs=os.listdir(music)
+        #     print(songs)
+        #     os.startfile(os.path.join(music, songs[0]))
         elif 'play music' in query:
             speak("What song would you like to play?")
-            song = takeCommand()
+            song = takeCommand().lower()
             if song != "none":
                 speak(f"Playing {song} on YouTube")
-                pywhatkit.playonyt(song)
-
+                pywhatkit.playonyt(song) 
         elif 'the time' in query:
-            strTime = datetime.datetime.now().strftime("%H:%M:%S")
-            speak(f"The time is {strTime}")
+            strTime=datetime.datetime.now().strftime("%H:%M:%S")
+            speak(f"Sir the time is {strTime}")
 
         elif 'open vs code' in query:
-            path = "C:\\Users\\laves\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+            path="C:\\Users\\laves\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
             os.startfile(path)
+        elif 'email to arpit' in query:
+            try:
+                speak("What should I say")
+                content =takeCommand()
+                to = "23071433@gmail.com"
+                sendEmail(to,content)
+                speak("Email has been send")
+            except Exception as e:
+                print(e)
+                speak("Sorry my Friend Email cant be send at this moment")
+
