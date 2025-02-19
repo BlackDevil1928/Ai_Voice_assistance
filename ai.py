@@ -1,8 +1,10 @@
 import pyttsx3
+import tkinter
 import speech_recognition as sr
 import datetime
 import wikipedia
 import webbrowser
+import os
 engine= pyttsx3.init('sapi5')
 voices=engine.getProperty('voices')
 
@@ -50,5 +52,21 @@ if __name__=="__main__":
             speak("According to Wikipedia")
             print(results)
             speak(results)
-        elif 'open youtube' in query:
+        elif 'open Youtube' in query:
             webbrowser.open("youtube.com")
+        elif 'open Instagram' in query:
+            webbrowser.open("instagram.com")
+        elif 'open Google' in query:
+            webbrowser.open("google.com")
+        elif 'play music' in query:
+            music='G:\\music'
+            songs=os.listdir(music)
+            print(songs)
+            os.startfile(os.path.join(music, songs[0]))
+        elif 'the time' in query:
+            strTime=datetime.datetime.now().strftime("%H:%M:%S")
+            speak(f"Sir the time is {strTime}")
+
+        elif 'open vs code' in query:
+            path="C:\\Users\\laves\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+            os.startfile(path)
