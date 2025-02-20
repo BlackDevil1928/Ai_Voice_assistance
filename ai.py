@@ -7,6 +7,7 @@ import webbrowser
 import os
 import pywhatkit 
 import smtplib
+import pyjokes
 engine= pyttsx3.init('sapi5')
 voices=engine.getProperty('voices')
 
@@ -80,7 +81,10 @@ if __name__=="__main__":
         elif 'the time' in query:
             strTime=datetime.datetime.now().strftime("%H:%M:%S")
             speak(f"Sir the time is {strTime}")
-
+        elif 'joke' in query:
+            joke=pyjokes.get_joke()
+            print(joke)
+            speak(joke)
         elif 'open vs code' in query:
             path="C:\\Users\\laves\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
             os.startfile(path)
