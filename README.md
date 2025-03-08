@@ -10,21 +10,25 @@ Setup and Installation
 To set up the project locally, follow these steps:
 
   1. Clone the Repository:
-        git clone https://github.com/BlackDevil1928/Ai_Voice_assistance .git
-        cd Ai_Voice_assistance
+     
+         git clone https://github.com/BlackDevil1928/Ai_Voice_assistance.git
+         cd Ai_Voice_assistance
      
   2. Set Up a Virtual Environment: It's recommended to use a virtual environment to manage dependencies.
-       python -m venv env
-       source env/bin/activate  # On Windows, use 'env\Scripts\activate'
+
+         python -m venv env
+         source env/bin/activate  # On Windows, use 'env\Scripts\activate'
      
   3. Install Dependencies: Install the required Python packages using pip:
-       pip install -r Requirements.txt
 
-  4. Configure Environment Variables: Ensure that the .env file is properly set up with all necessary environment variables.
+         pip install -r Requirements.txt
+
+  5. Configure Environment Variables: Ensure that the .env file is properly set up with all necessary environment variables.
      This may include configurations like database connections, API keys, etc.
 
-  5. Run the Application: Execute the main script to start the application:
-       python Main.py
+  6. Run the Application: Execute the main script to start the application:
+
+          python Main.py
 
 Contribution
 
